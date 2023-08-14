@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -92,7 +93,7 @@ namespace TronNet.Crypto
         public static byte[] Hash(byte[] input)
         {
             byte[] hashBytes;
-            var hash = new System.Security.Cryptography.SHA256Managed();
+            using var hash = SHA256.Create();
             using var stream = new MemoryStream(input);
             try
             {
