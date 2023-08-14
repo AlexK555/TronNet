@@ -9,12 +9,6 @@ namespace TronNet
 {
     public static class TronNetServiceExtension
     {
-        public static StowayNet.IStowayNetBuilder AddTronNet(StowayNet.IStowayNetBuilder builder, Action<TronNetOptions> setupAction)
-        {
-            builder.Services.AddTronNet(setupAction);
-
-            return builder;
-        }
 
         public static IServiceCollection AddTronNet(this IServiceCollection services, Action<TronNetOptions> setupAction)
         {

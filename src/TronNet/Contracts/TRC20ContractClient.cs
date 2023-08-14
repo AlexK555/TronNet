@@ -62,11 +62,9 @@ namespace TronNet.Contracts
             var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAccount.Address);
             var wallet = _walletClient.GetProtocol();
             var functionABI = ABITypedRegistry.GetFunctionABI<TransferFunction>();
-            try
-            {
+            try {
 
-                var contract = await wallet.GetContractAsync(new BytesMessage
-                {
+                var contract = await wallet.GetContractAsync(new BytesMessage {
                     Value = ByteString.CopyFrom(contractAddressBytes),
                 }, headers: _walletClient.GetHeaders());
 
@@ -78,22 +76,18 @@ namespace TronNet.Contracts
                 var decimals = GetDecimals(wallet, contractAddressBytes);
 
                 var tokenAmount = amount;
-                if (decimals > 0)
-                {
+                if (decimals > 0) {
                     tokenAmount = amount * Convert.ToDecimal(Math.Pow(10, decimals));
                 }
 
-                var trc20Transfer = new TransferFunction
-                {
+                var trc20Transfer = new TransferFunction {
                     To = toAddressHex,
                     TokenAmount = Convert.ToInt64(tokenAmount),
                 };
 
                 var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, functionABI.Sha3Signature);
 
-
-                var trigger = new TriggerSmartContract
-                {
+                var trigger = new TriggerSmartContract {
                     ContractAddress = ByteString.CopyFrom(contractAddressBytes),
                     OwnerAddress = ByteString.CopyFrom(ownerAddressBytes),
                     Data = ByteString.CopyFrom(encodedHex.HexToByteArray()),
@@ -101,17 +95,17 @@ namespace TronNet.Contracts
 
                 var transactionExtention = await wallet.TriggerConstantContractAsync(trigger, headers: _walletClient.GetHeaders());
 
-                if (!transactionExtention.Result.Result)
-                {
-                    _logger.LogWarning($"[transfer]transfer failed, message={transactionExtention.Result.Message.ToStringUtf8()}.");
-                    return null;
+                if (!transactionExtention.Result.Result) {
+                    var error = $"[transfer]transfer failed, message={transactionExtention.Result.Message.ToStringUtf8()}.";
+                    _logger.LogWarning(error);
+                    throw new Exception(error);
                 }
 
                 var transaction = transactionExtention.Transaction;
 
-                if (transaction.Ret.Count > 0 && transaction.Ret[0].Ret == Transaction.Types.Result.Types.code.Failed)
-                {
-                    return null;
+                if (transaction.Ret.Count > 0 && transaction.Ret[0].Ret == Transaction.Types.Result.Types.code.Failed) {
+                    var error = $"Ret count error {transaction.Ret[0].Ret}. [transfer]transfer failed, message={transactionExtention.Result.Message.ToStringUtf8()}.";
+                    throw new Exception(error);
                 }
 
                 transaction.RawData.Data = ByteString.CopyFromUtf8(memo);
@@ -122,15 +116,11 @@ namespace TronNet.Contracts
                 var result = await _transactionClient.BroadcastTransactionAsync(transSign);
 
                 return transSign.GetTxid();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 _logger.LogError(ex, ex.Message);
-                return null;
+                throw;
             }
         }
-
-
 
         public async Task<decimal> BalanceOfAsync(string contractAddress, ITronAccount ownerAccount)
         {
