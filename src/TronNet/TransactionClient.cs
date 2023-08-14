@@ -10,7 +10,7 @@ using TronNet.Protocol;
 
 namespace TronNet
 {
-    class TransactionClient : ITransactionClient
+    public class TransactionClient : ITransactionClient
     {
         private readonly IWalletClient _walletClient;
         private readonly IOptions<TronNetOptions> _options;

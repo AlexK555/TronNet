@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TronNet
 {
-    class GrpcChannelClient : IGrpcChannelClient
+    public class GrpcChannelClient : IGrpcChannelClient
     {
         private readonly ILogger<GrpcChannelClient> _logger;
         private readonly IOptions<TronNetOptions> _options;
@@ -20,13 +20,27 @@ namespace TronNet
             _options = options;
         }
 
-        public Channel GetProtocol()
-        {
-            return new Channel(_options.Value.Channel.Host, _options.Value.Channel.Port, ChannelCredentials.Insecure);
+        //TODO: not safe
+        IList<Channel> _channels = new List<Channel>();
+
+        public Channel GetProtocol() {
+            var c = new Channel(_options.Value.Channel.Host, _options.Value.Channel.Port, ChannelCredentials.Insecure);
+            _channels.Add(c);
+            return c;
         }
-        public Channel GetSolidityProtocol()
-        {
-            return new Channel(_options.Value.SolidityChannel.Host, _options.Value.SolidityChannel.Port, ChannelCredentials.Insecure);
+
+        public Channel GetSolidityProtocol() {
+            var c = new Channel(_options.Value.SolidityChannel.Host, _options.Value.SolidityChannel.Port, ChannelCredentials.Insecure);
+            _channels.Add(c);
+            return c;
+        }
+
+        public async ValueTask DisposeAsync() {
+            var channels = _channels.ToList();
+            foreach (var c in channels) {
+                await c.ShutdownAsync();
+                _channels.Remove(c);
+            }
         }
     }
 

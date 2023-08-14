@@ -18,7 +18,7 @@ using TronNet.Protocol;
 
 namespace TronNet.Contracts
 {
-    class TRC20ContractClient : IContractClient
+    public class TRC20ContractClient : IContractClient
     {
         private readonly ILogger<TRC20ContractClient> _logger;
         private readonly IWalletClient _walletClient;
@@ -114,7 +114,6 @@ namespace TronNet.Contracts
                 var transSign = _transactionClient.GetTransactionSign(transaction, ownerAccount.PrivateKey);
 
                 var result = await _transactionClient.BroadcastTransactionAsync(transSign);
-
                 return transSign.GetTxid();
             } catch (Exception ex) {
                 _logger.LogError(ex, ex.Message);

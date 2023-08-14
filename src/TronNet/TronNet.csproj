@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Authors>stoway</Authors>
-    <Version>0.2.0</Version>
+    <Version>0.2.3</Version>
     <PackageProjectUrl>https://github.com/stoway/TronNet</PackageProjectUrl>
     <PackageTags>tron, tron protocol, tron grpc</PackageTags>
     <Company>stoway.net</Company>
@@ -12,7 +12,7 @@ TronNet makes it easy to build TRON applications with .net.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/stoway/TronNet</RepositoryUrl>
     <PackageReleaseNotes>Release notes are at https://github.com/stoway/TronNet/releases</PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

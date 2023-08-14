@@ -12,8 +12,7 @@ using TronNet.Protocol;
 
 namespace TronNet
 {
-    class WalletClient : IWalletClient
-    {
+    public class WalletClient : IWalletClient {
         private readonly IGrpcChannelClient _channelClient;
         private readonly IOptions<TronNetOptions> _options;
 
@@ -23,8 +22,8 @@ namespace TronNet
             _options = options;
         }
 
-        public Wallet.WalletClient GetProtocol()
-        {
+        public Wallet.WalletClient GetProtocol() {
+            
             var channel = _channelClient.GetProtocol();
             var wallet = new Wallet.WalletClient(channel);
             return wallet;
@@ -80,8 +79,7 @@ namespace TronNet
             return ByteString.CopyFrom(raw);
         }
 
-        public Metadata GetHeaders()
-        {
+        public Metadata GetHeaders() {
             var headers = new Metadata
             {
                 { "TRON-PRO-API-KEY", _options.Value.ApiKey }
@@ -89,5 +87,6 @@ namespace TronNet
 
             return headers;
         }
+
     }
 }

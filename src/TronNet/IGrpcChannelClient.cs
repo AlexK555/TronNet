@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TronNet
 {
-    public interface IGrpcChannelClient
+    public interface IGrpcChannelClient : IAsyncDisposable
     {
         
         Grpc.Core.Channel GetProtocol();
